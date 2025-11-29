@@ -11,23 +11,29 @@ export default function StyledComponentsRegistry({
 }: {
   children: React.ReactNode;
 }) {
-  const [styledComponentsStyleSheet] = useState(() => new ServerStyleSheet());
-
-  useServerInsertedHTML(() => {
-    const styles = styledComponentsStyleSheet.getStyleElement();
-
-    styledComponentsStyleSheet.instance.clearTag();
-
-    return <>{styles}</>;
+  const [styledComponentsStyleSheet] = useState(() => {
+    if (typeof window === "undefined") {
+      return new ServerStyleSheet();
+    }
+    return null;
   });
 
-  if (typeof window !== "undefined") {
-    return <>{children}</>;
+  useServerInsertedHTML(() => {
+    if (styledComponentsStyleSheet) {
+      const styles = styledComponentsStyleSheet.getStyleElement();
+      styledComponentsStyleSheet.instance.clearTag();
+      return <>{styles}</>;
+    }
+    return null;
+  });
+
+  if (styledComponentsStyleSheet) {
+    return (
+      <StyleSheetManager sheet={styledComponentsStyleSheet.instance}>
+        {children}
+      </StyleSheetManager>
+    );
   }
 
-  return (
-    <StyleSheetManager sheet={styledComponentsStyleSheet.instance}>
-      {children}
-    </StyleSheetManager>
-  );
+  return <>{children}</>;
 }

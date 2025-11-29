@@ -4,6 +4,7 @@
 
 import React from "react";
 import styled from "styled-components";
+import Link from "next/link";
 import { Car } from "@/types/Car";
 import { useCarStore } from "@/store/carStore";
 
@@ -96,7 +97,8 @@ const InfoText = styled.p`
   }
 `;
 
-const LearnMoreButton = styled.button`
+// Стылізаваная кнопка, якая будзе выкарыстоўвацца ў якасці тэга <a>
+const LearnMoreButtonStyled = styled.button`
   width: 100%;
   height: 44px;
   background-color: var(--color-button-primary);
@@ -107,6 +109,9 @@ const LearnMoreButton = styled.button`
   font-weight: 600;
   cursor: pointer;
   transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &:hover {
     background-color: var(--color-button-hover);
@@ -157,7 +162,7 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
       <TitleBlock>
         <TitleText>
           {car.brand} <span style={{ fontWeight: 600 }}>{car.model}</span>,{" "}
-          {car.year}
+          {car.yea}
         </TitleText>
         <PriceText>{car.rentalPrice}$</PriceText>
       </TitleBlock>
@@ -172,7 +177,10 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
         <span>{car.functionalities[0]}</span>
       </InfoText>
 
-      <LearnMoreButton>Learn more</LearnMoreButton>
+      {/* Выкарыстоўваем Next.js Link для навігацыі */}
+      <Link href={`/auto/${car.id}`} passHref>
+        <LearnMoreButtonStyled as="a">Learn more</LearnMoreButtonStyled>
+      </Link>
     </CardWrapper>
   );
 };

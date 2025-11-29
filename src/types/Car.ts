@@ -1,8 +1,8 @@
 // src/types/Car.ts
 
-export type Car = {
+export interface Car {
   id: string;
-  year: number;
+  yea: number;
   brand: string;
   model: string;
   type: string;
@@ -17,7 +17,7 @@ export type Car = {
   address: string;
   rentalConditions: string[];
   mileage: number;
-};
+}
 
 export type CarListResponse = {
   cars: Car[];
