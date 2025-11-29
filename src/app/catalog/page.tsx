@@ -34,18 +34,26 @@ const CarGrid = styled.ul`
 
 const LoadMoreButton = styled.button`
   display: block;
-  margin: 0 auto 150px;
-  background: none;
-  border: none;
-  color: var(--color-button-primary);
-  font-size: 16px;
-  font-weight: 500;
-  text-decoration: underline;
-  cursor: pointer;
-  transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  width: 200px; 
+  height: 44px;
+  margin: 0 auto 150px; 
 
+  background-color: var(--color-button-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none; 
+  cursor: pointer;
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
   &:hover {
-    color: var(--color-button-hover);
+    background-color: var(--color-button-hover);
+  }
+  &:disabled {
+    background-color: var(
+      --color-text-details
+    cursor: not-allowed;
   }
 `;
 
