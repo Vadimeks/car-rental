@@ -1,66 +1,93 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+// src/app/page.tsx
+"use client";
 
-export default function Home() {
+import React from "react";
+import styled from "styled-components";
+import Link from "next/link";
+
+// Styles Hero Section and Home Page
+
+const HomePageWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+`;
+
+const HeroSection = styled.section`
+  width: 1440px;
+  height: 700px;
+  background-image: url("/hero-2x.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  max-width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  position: relative;
+`;
+
+const ContentBlock = styled.div`
+  margin-top: 436px;
+  width: 784px;
+  height: 204px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+`;
+
+const Title = styled.h1`
+  font-size: 60px;
+  line-height: 72px; /* 72px */
+  font-weight: 700;
+  color: rgba(255, 255, 255, 1);
+  white-space: nowrap;
+  text-align: center;
+`;
+
+const Subtitle = styled.p`
+  margin-top: 16px;
+  font-size: 24px; /* 24px */
+  line-height: 32px; /* 32px */
+  font-weight: 600; /* SemiBold */
+  color: rgba(255, 255, 255, 1);
+  text-align: center;
+`;
+
+const CatalogButton = styled(Link)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40px;
+  padding: 12px 99px;
+  background-color: var(--color-button-primary);
+  color: var(--color-white);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  &:hover {
+    background-color: var(--color-button-hover);
+  }
+`;
+
+// Component HomePage
+
+export default function HomePage() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <HomePageWrapper>
+      <HeroSection>
+        <ContentBlock>
+          <Title>Find your perfect rental car</Title>
+          <Subtitle>
+            Reliable and budget-friendly rentals for any journey
+          </Subtitle>
+          <CatalogButton href="/catalog">View Catalog</CatalogButton>
+        </ContentBlock>
+      </HeroSection>
+    </HomePageWrapper>
   );
 }
