@@ -34,9 +34,9 @@ const CarGrid = styled.ul`
 
 const LoadMoreButton = styled.button`
   display: block;
-  width: 200px; 
+  width: 200px;
   height: 44px;
-  margin: 0 auto 150px; 
+  margin: 0 auto 150px;
 
   background-color: var(--color-button-primary);
   color: var(--color-white);
@@ -44,15 +44,14 @@ const LoadMoreButton = styled.button`
   border-radius: 12px;
   font-size: 14px;
   font-weight: 600;
-  text-decoration: none; 
+  text-decoration: none;
   cursor: pointer;
   transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
   &:hover {
     background-color: var(--color-button-hover);
   }
   &:disabled {
-    background-color: var(
-      --color-text-details
+    background-color: var(--color-text-details);
     cursor: not-allowed;
   }
 `;
@@ -60,20 +59,32 @@ const LoadMoreButton = styled.button`
 // === Component Page ===
 
 const CarCatalogPage: React.FC = () => {
+  // 🔑 ВЫПРАЎЛЕННЕ: Выкарыстоўваем асобныя селектары для значэнняў і функцый.
+  // Гэта гарантуе, што `useCarStore` не вяртае новы аб'ект {} пры кожным рэндэры,
+  // што выклікае бясконцы цыкл абнаўленняў (Maximum update depth exceeded).
   const cars = useCarStore((state) => state.cars);
   const isLoading = useCarStore((state) => state.isLoading);
-  const fetchCars = useCarStore((state) => state.fetchCars);
-
   const page = useCarStore((state) => state.page);
   const totalPages = useCarStore((state) => state.totalPages);
+  const fetchCars = useCarStore((state) => state.fetchCars);
+  const fetchAvailableBrands = useCarStore(
+    (state) => state.fetchAvailableBrands
+  );
 
   const showLoadMore = !isLoading && page < totalPages;
 
   useEffect(() => {
+    // Load available brands once on mount
+    fetchAvailableBrands();
+
+    // Load initial car list if empty
     if (cars.length === 0) {
       fetchCars(false);
     }
-  }, [cars.length, fetchCars]);
+
+    // Залежнасці: fetchCars і fetchAvailableBrands стабільныя функцыі ад Zustand,
+    // cars.length змяняецца толькі пры загрузцы новых дадзеных.
+  }, [cars.length, fetchCars, fetchAvailableBrands]);
 
   const handleLoadMore = () => {
     fetchCars(true);

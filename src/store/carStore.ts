@@ -3,7 +3,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { Car, CarFilterParams } from "@/types/Car";
-import { fetchCars } from "@/services/api";
+import { fetchCars, fetchCarBrands } from "@/services/api";
 
 interface FilterState {
   brand: string | null;
@@ -17,11 +17,14 @@ interface CarState {
   favorites: Car[];
   filters: FilterState;
 
+  availableBrands: string[];
+
   isLoading: boolean;
   page: number;
   totalPages: number;
 
   fetchCars: (isLoadMore?: boolean) => Promise<void>;
+  fetchAvailableBrands: () => Promise<void>;
   setFilter: (newFilters: Partial<FilterState>) => void;
   toggleFavorite: (car: Car) => void;
 }
@@ -39,6 +42,7 @@ export const useCarStore = create<CarState>()(
         minMileage: null,
         maxMileage: null,
       },
+      availableBrands: [],
       isLoading: false,
       page: 1,
       totalPages: 1,
@@ -52,7 +56,14 @@ export const useCarStore = create<CarState>()(
         const cleanFilters = Object.entries(currentFilters).reduce(
           (acc, [key, value]) => {
             if (value !== null) {
-              acc[key as keyof FilterState] = value;
+              if (key === "rentalPrice" && value) {
+                acc[key as keyof FilterState] = parseInt(
+                  value as string,
+                  10
+                ).toString();
+              } else {
+                acc[key as keyof FilterState] = value;
+              }
             }
             return acc;
           },
@@ -80,6 +91,15 @@ export const useCarStore = create<CarState>()(
         }
       },
 
+      fetchAvailableBrands: async () => {
+        try {
+          const brands = await fetchCarBrands();
+          set({ availableBrands: brands.sort() });
+        } catch (error) {
+          console.error("Error fetching available brands:", error);
+        }
+      },
+
       setFilter: (newFilters) => {
         const currentFilters = get().filters;
         set({
@@ -88,6 +108,7 @@ export const useCarStore = create<CarState>()(
           page: 1,
           totalPages: 1,
         });
+        get().fetchCars(false);
       },
 
       toggleFavorite: (car) => {

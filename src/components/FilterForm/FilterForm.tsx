@@ -2,6 +2,17 @@
 
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useCarStore } from "@/store/carStore";
+
+const formatMileageDisplay = (value: string) => {
+  if (!value) return "";
+  const num = parseInt(value.replace(/[^0-9]/g, ""), 10);
+  return isNaN(num) ? "" : num.toLocaleString("en-US");
+};
+
+const cleanMileage = (value: string) => {
+  return value.replace(/[^0-9]/g, "");
+};
 
 // === Form Styling ===
 
@@ -18,9 +29,8 @@ const FormField = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-
   &:not(:last-child) {
-    margin-right: 16px;
+    margin-right: 18px;
   }
 `;
 
@@ -66,12 +76,10 @@ const StyledInput = styled.input<{ $isLeft?: boolean }>`
   font-weight: 500;
   line-height: 1.11;
   color: var(--color-text-primary);
-
   border-radius: ${(props) =>
     props.$isLeft ? "14px 0 0 14px" : "0 14px 14px 0"};
   border-right: ${(props) =>
     props.$isLeft ? "1px solid rgba(138, 138, 137, 0.2)" : "none"};
-
   &:focus {
     outline: none;
   }
@@ -88,7 +96,7 @@ const SearchButton = styled.button`
   font-weight: 600;
   transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
-
+  margin-left: 18px;
   &:hover {
     background-color: var(--color-button-hover);
   }
@@ -97,30 +105,33 @@ const SearchButton = styled.button`
 // === FilterForm Component ===
 
 const FilterForm: React.FC = () => {
-  const [brand, setBrand] = useState("");
-  const [price, setPrice] = useState("");
-  const [mileageFrom, setMileageFrom] = useState("");
-  const [mileageTo, setMileageTo] = useState("");
+  // Заменілі аб'ектны селектар на асобныя селектары, каб не вяртаць новы аб'ект кожны раз
+  const filters = useCarStore((state) => state.filters);
+  const setFilter = useCarStore((state) => state.setFilter);
+  const availableBrands = useCarStore((state) => state.availableBrands);
+
+  const [brand, setBrand] = useState(filters?.brand || "");
+  const [price, setPrice] = useState(filters?.rentalPrice || "");
+  const [mileageFrom, setMileageFrom] = useState(filters?.minMileage || "");
+  const [mileageTo, setMileageTo] = useState(filters?.maxMileage || "");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ brand, price, mileageFrom, mileageTo });
+
+    const filtersPayload = {
+      brand: brand || null,
+      rentalPrice: price || null,
+      minMileage: cleanMileage(mileageFrom) || null,
+      maxMileage: cleanMileage(mileageTo) || null,
+    };
+    setFilter(filtersPayload);
   };
 
-  const brandOptions = [
-    "Buick",
-    "Volvo",
-    "Hummer",
-    "Subaru",
-    "Mitsubishi",
-    "Nissan",
-    "Lincoln",
-  ];
+  const brandOptions = availableBrands || [];
   const priceOptions = [30, 40, 50, 60, 70, 80, 90, 100, 150, 200];
 
   return (
     <FormContainer onSubmit={handleSubmit}>
-      {/* 1. Brand Select (204px) */}
       <FormField>
         <Label htmlFor="carBrand">Car brand</Label>
         <StyledSelect
@@ -138,7 +149,6 @@ const FilterForm: React.FC = () => {
         </StyledSelect>
       </FormField>
 
-      {/* 2. Price Select (196px) */}
       <FormField>
         <Label htmlFor="priceHour">Price/1 hour</Label>
         <StyledSelect
@@ -156,7 +166,6 @@ const FilterForm: React.FC = () => {
         </StyledSelect>
       </FormField>
 
-      {/* 3. Mileage Input Range (320px) */}
       <FormField>
         <Label>Car mileage / km</Label>
         <MileageWrapper>
@@ -164,19 +173,18 @@ const FilterForm: React.FC = () => {
             $isLeft
             type="text"
             placeholder="From"
-            value={mileageFrom}
-            onChange={(e) => setMileageFrom(e.target.value)}
+            value={`From ${formatMileageDisplay(mileageFrom)}`}
+            onChange={(e) => setMileageFrom(cleanMileage(e.target.value))}
           />
           <StyledInput
             type="text"
             placeholder="To"
-            value={mileageTo}
-            onChange={(e) => setMileageTo(e.target.value)}
+            value={`To ${formatMileageDisplay(mileageTo)}`}
+            onChange={(e) => setMileageTo(cleanMileage(e.target.value))}
           />
         </MileageWrapper>
       </FormField>
 
-      {/* 4. Search Button (156px) */}
       <SearchButton type="submit">Search</SearchButton>
     </FormContainer>
   );
