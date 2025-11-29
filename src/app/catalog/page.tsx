@@ -6,7 +6,7 @@ import React, { useEffect } from "react";
 import { useCarStore } from "@/store/carStore";
 import styled from "styled-components";
 import CarCard from "@/components/CarCard/CarCard";
-
+import FilterForm from "@/components/FilterForm/FilterForm";
 //Styles
 
 const LoaderText = styled.h2`
@@ -26,7 +26,7 @@ const CarGrid = styled.ul`
   display: flex;
   flex-wrap: wrap;
   gap: 48px 32px;
-  margin-top: 56px; /* Адступ адносна верхняга элемента */
+  margin-top: 56px;
   margin-bottom: 80px;
   list-style: none;
   padding: 0;
@@ -34,7 +34,7 @@ const CarGrid = styled.ul`
 
 const LoadMoreButton = styled.button`
   display: block;
-  margin: 0 auto 120px;
+  margin: 0 auto 150px;
   background: none;
   border: none;
   color: var(--color-button-primary);
@@ -49,7 +49,7 @@ const LoadMoreButton = styled.button`
   }
 `;
 
-// Page component ===
+// === Component Page ===
 
 const CarCatalogPage: React.FC = () => {
   const cars = useCarStore((state) => state.cars);
@@ -70,14 +70,13 @@ const CarCatalogPage: React.FC = () => {
   const handleLoadMore = () => {
     fetchCars(true);
   };
+
   return (
     <CatalogContainer>
+      <FilterForm />
+
       {isLoading && cars.length === 0 && (
         <LoaderText>Загрузка аўтамабіляў...</LoaderText>
-      )}
-
-      {isLoading && cars.length > 0 && (
-        <p style={{ textAlign: "center" }}>Загрузка дадатковых...</p>
       )}
 
       {cars.length > 0 && (
