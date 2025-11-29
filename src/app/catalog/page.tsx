@@ -5,6 +5,9 @@
 import React, { useEffect } from "react";
 import { useCarStore } from "@/store/carStore";
 import styled from "styled-components";
+import CarCard from "@/components/CarCard/CarCard";
+
+//Styles
 
 const LoaderText = styled.h2`
   text-align: center;
@@ -14,15 +17,49 @@ const LoaderText = styled.h2`
 
 const CatalogContainer = styled.div`
   max-width: 1440px;
-  padding: 40px 128px; /* Адпавядае макету */
+  padding: 0px 120px;
   margin: 0 auto;
-  min-height: 80vh;
+  width: 100%;
 `;
+
+const CarGrid = styled.ul`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 48px 32px;
+  margin-top: 56px; /* Адступ адносна верхняга элемента */
+  margin-bottom: 80px;
+  list-style: none;
+  padding: 0;
+`;
+
+const LoadMoreButton = styled.button`
+  display: block;
+  margin: 0 auto 120px;
+  background: none;
+  border: none;
+  color: var(--color-button-primary);
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    color: var(--color-button-hover);
+  }
+`;
+
+// Page component ===
 
 const CarCatalogPage: React.FC = () => {
   const cars = useCarStore((state) => state.cars);
   const isLoading = useCarStore((state) => state.isLoading);
   const fetchCars = useCarStore((state) => state.fetchCars);
+
+  const page = useCarStore((state) => state.page);
+  const totalPages = useCarStore((state) => state.totalPages);
+
+  const showLoadMore = !isLoading && page < totalPages;
 
   useEffect(() => {
     if (cars.length === 0) {
@@ -30,21 +67,32 @@ const CarCatalogPage: React.FC = () => {
     }
   }, [cars.length, fetchCars]);
 
+  const handleLoadMore = () => {
+    fetchCars(true);
+  };
   return (
     <CatalogContainer>
-      <h1>Каталог Аўтамабіляў</h1>
-      {/* <FilterForm /> */}
-      {/* Loader */}
-      {isLoading && <LoaderText>Загрузка аўтамабіляў...</LoaderText>}
-
-      {!isLoading && cars.length > 0 && (
-        <>
-          <p>Знойдзена {cars.length} аўтамабіляў.</p>
-          {/* CarList */}
-          <pre>{JSON.stringify(cars.slice(0, 2), null, 2)}</pre>
-        </>
+      {isLoading && cars.length === 0 && (
+        <LoaderText>Загрузка аўтамабіляў...</LoaderText>
       )}
-      {/* <LoadMoreButton /> */}
+
+      {isLoading && cars.length > 0 && (
+        <p style={{ textAlign: "center" }}>Загрузка дадатковых...</p>
+      )}
+
+      {cars.length > 0 && (
+        <CarGrid>
+          {cars.map((car) => (
+            <CarCard key={car.id} car={car} />
+          ))}
+        </CarGrid>
+      )}
+
+      {showLoadMore && (
+        <LoadMoreButton onClick={handleLoadMore} disabled={isLoading}>
+          {isLoading && cars.length > 0 ? "Загрузка..." : "Load more"}
+        </LoadMoreButton>
+      )}
 
       {!isLoading && cars.length === 0 && (
         <p style={{ textAlign: "center", marginTop: "50px" }}>

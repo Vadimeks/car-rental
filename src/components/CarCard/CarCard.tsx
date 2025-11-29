@@ -8,8 +8,8 @@ import { Car } from "@/types/Car";
 import { useCarStore } from "@/store/carStore";
 
 const CardWrapper = styled.li`
-  width: 274px;
-  height: 426px;
+  width: 276px;
+  height: 424px;
   list-style: none;
   display: flex;
   flex-direction: column;
@@ -17,6 +17,7 @@ const CardWrapper = styled.li`
 `;
 
 const ImageContainer = styled.div`
+  width: 276px;
   height: 268px;
   margin-bottom: 14px;
   border-radius: 14px;
@@ -126,10 +127,8 @@ interface CarCardProps {
 }
 
 const CarCard: React.FC<CarCardProps> = ({ car }) => {
-  const { favorites, toggleFavorite } = useCarStore((state) => ({
-    favorites: state.favorites,
-    toggleFavorite: state.toggleFavorite,
-  }));
+  const favorites = useCarStore((state) => state.favorites);
+  const toggleFavorite = useCarStore((state) => state.toggleFavorite);
 
   const isFavorite = favorites.some((fav) => fav.id === car.id);
 
