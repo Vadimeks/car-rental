@@ -4,17 +4,18 @@
 
 import React from "react";
 import styled from "styled-components";
-import { Formik, Field, Form, ErrorMessage, FormikHelpers } from "formik";
+import {
+  Formik,
+  Field,
+  Form,
+  ErrorMessage,
+  FormikHelpers,
+  FormikProps,
+} from "formik";
 import * as Yup from "yup";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// === COLORS AND CONSTANTS ===
-const COLOR_PRIMARY = "#101828";
-const COLOR_SECONDARY = "#8D929A";
-const COLOR_BACKGROUND = "#F7F7F7";
-const COLOR_BUTTON_PRIMARY = "#3470FF";
-const COLOR_BORDER = "#DADDE1";
 const COLOR_ERROR = "red";
 
 // === CONTAINER AND HEADER STYLES ===
@@ -22,45 +23,42 @@ const COLOR_ERROR = "red";
 const BookingFormContainer = styled.div`
   width: 640px;
   height: 488px;
-  border: 1px solid ${COLOR_BORDER};
+  border: 1px solid var(--color-gray-light);
   border-radius: 12px;
   padding: 32px;
 `;
 
 const FormHeader = styled.h2`
   width: 173px;
-  font-family: Manrope;
+  font-family: var(--font-family-main);
   font-weight: 600;
   font-size: 20px;
   line-height: 24px;
-  color: ${COLOR_PRIMARY};
+  color: var(--color-main);
   margin-bottom: 8px;
 `;
 
 const FormSubtext = styled.p`
   width: 576px;
-  font-family: Manrope;
+  font-family: var(--font-family-main);
   font-weight: 500;
   font-size: 16px;
   line-height: 20px;
-  color: ${COLOR_SECONDARY};
+  color: var(--color-gray);
   margin-bottom: 24px;
 `;
 
 // === FORM AND INPUT STYLES ===
 
-// 🔑 FIX: Removed gap: 16px from the form container
 const StyledForm = styled(Form)`
   display: flex;
   flex-direction: column;
-  /* No gap here, inputs handle margin bottom */
 `;
 
 const FormFieldWrapper = styled.div<{ $marginBottom?: string }>`
   display: flex;
   flex-direction: column;
-  gap: 4px; /* Space between input and error message */
-  /* Apply 16px margin *after* the input/error group */
+  gap: 4px;
   margin-bottom: ${(props) => props.$marginBottom || "16px"};
 `;
 
@@ -68,17 +66,22 @@ const InputBaseStyles = `
  width: 576px;
  border-radius: 12px;
  padding: 12px 20px;
- background-color: ${COLOR_BACKGROUND};
+ background-color: var(--color-background-input); 
  border: 1px solid var(--border-color, transparent); 
  outline: none;
  transition: border-color 0.2s;
- font-family: Manrope;
+ 
+ font-family: var(--font-family-main);
  font-weight: 500;
  font-size: 16px;
  line-height: 20px;
- color: ${COLOR_SECONDARY};
+ color: var(--color-main); 
+
  &::placeholder {
- color: ${COLOR_SECONDARY};
+  color: var(--color-gray);
+ }
+ &:focus, &:not([value=""]) {
+  color: var(--color-main);
  }
 `;
 
@@ -95,13 +98,12 @@ const CommentInput = styled(Field)<{ $hasError?: boolean }>`
   border-color: ${(props) => (props.$hasError ? COLOR_ERROR : "transparent")};
 `;
 
-// 🔑 FIX: Ensure button styles are correct (blue background) and handle margins
 const SubmitButton = styled.button`
   width: 156px;
   height: 44px;
-  /* Margin is now handled by the parent FormFieldWrapper */
-  background-color: ${COLOR_BUTTON_PRIMARY};
-  color: white;
+  margin-top: 24px;
+  background-color: var(--color-button-primary);
+  color: var(--color-white);
   border: none;
   border-radius: 12px;
   padding: 12px 51px;
@@ -110,10 +112,10 @@ const SubmitButton = styled.button`
   cursor: pointer;
   transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
   &:hover:not(:disabled) {
-    background-color: #0b44b9;
+    background-color: var(--color-button-hover);
   }
   &:disabled {
-    background-color: #ccc;
+    background-color: var(--color-gray);
     cursor: not-allowed;
   }
 `;
@@ -124,7 +126,7 @@ const ErrorMessageText = styled(ErrorMessage)`
   font-weight: 500;
 `;
 
-// === YUP SCHEMA ===
+// === YUP SCHEMA AND TYPES ===
 
 interface BookingValues {
   name: string;
@@ -136,10 +138,7 @@ interface BookingValues {
 const BookingSchema = Yup.object().shape({
   name: Yup.string()
     .min(2, "Minimum 2 letters required.")
-    .matches(
-      /^[a-zA-Zа-яА-ЯёЁіІўЎ\s]+$/,
-      "Name can only contain letters and spaces."
-    )
+    .matches(/^[a-zA-Z\s]+$/, "Name can only contain letters and spaces.")
     .required("Name is required"),
 
   email: Yup.string()
@@ -148,7 +147,7 @@ const BookingSchema = Yup.object().shape({
 
   date: Yup.string().required("Booking date is required"),
 
-  comment: Yup.string(),
+  comment: Yup.string().nullable(),
 });
 
 // === MAIN COMPONENT ===
@@ -167,7 +166,6 @@ export const BookingForm: React.FC = () => {
   ) => {
     setSubmitting(true);
 
-    // Anti-blocking fix
     await new Promise((resolve) => setTimeout(resolve, 50));
 
     try {
@@ -179,6 +177,7 @@ export const BookingForm: React.FC = () => {
 
       resetForm();
     } catch (_) {
+      // Using English for toast messages
       toast.error("Error submitting the order. Please try again.");
     } finally {
       setSubmitting(false);
@@ -188,20 +187,18 @@ export const BookingForm: React.FC = () => {
   return (
     <BookingFormContainer>
       <ToastContainer />
-      {/* Header and Subtext as per design */}
       <FormHeader>Book your car now</FormHeader>
       <FormSubtext>
         Stay connected! We are always ready to help you.
       </FormSubtext>
-
-      <Formik
+      <Formik<BookingValues>
         initialValues={initialValues}
         validationSchema={BookingSchema}
         onSubmit={handleSubmission}
       >
-        {({ isSubmitting, errors, touched }) => (
+        {({ isSubmitting, errors, touched }: FormikProps<BookingValues>) => (
           <StyledForm>
-            {/* NAME (16px gap AFTER this block) */}
+            {/* NAME */}
             <FormFieldWrapper>
               <StyledInput
                 name="name"
@@ -213,8 +210,7 @@ export const BookingForm: React.FC = () => {
               />
               <ErrorMessageText name="name" component="div" />
             </FormFieldWrapper>
-
-            {/* EMAIL (16px gap AFTER this block) */}
+            {/* EMAIL */}
             <FormFieldWrapper>
               <StyledInput
                 name="email"
@@ -226,7 +222,7 @@ export const BookingForm: React.FC = () => {
               />
               <ErrorMessageText name="email" component="div" />
             </FormFieldWrapper>
-
+            {/* DATE */}
             <FormFieldWrapper>
               <StyledInput
                 name="date"
@@ -238,7 +234,7 @@ export const BookingForm: React.FC = () => {
               />
               <ErrorMessageText name="date" component="div" />
             </FormFieldWrapper>
-
+            {/* COMMENT */}
             <FormFieldWrapper $marginBottom="0">
               <CommentInput
                 name="comment"
@@ -247,12 +243,10 @@ export const BookingForm: React.FC = () => {
                 disabled={isSubmitting}
               />
             </FormFieldWrapper>
-
-            <div style={{ marginTop: "24px" }}>
-              <SubmitButton type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Sending..." : "Send"}
-              </SubmitButton>
-            </div>
+            {/* SUBMIT BUTTON */}
+            <SubmitButton type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Sending..." : "Send"}
+            </SubmitButton>
           </StyledForm>
         )}
       </Formik>

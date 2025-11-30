@@ -1,4 +1,5 @@
 // src/app/page.tsx
+
 "use client";
 
 import React from "react";
@@ -9,20 +10,14 @@ import Link from "next/link";
 
 const HomePageWrapper = styled.div`
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
 `;
 
 const HeroSection = styled.section`
-  width: 1440px;
   height: 700px;
   background-image: url("/hero-2x.webp");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  max-width: 100%;
-  margin: 0 auto;
   display: flex;
   justify-content: center;
   position: relative;
@@ -40,19 +35,19 @@ const ContentBlock = styled.div`
 
 const Title = styled.h1`
   font-size: 60px;
-  line-height: 72px; /* 72px */
+  line-height: 72px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 1);
+  color: var(--color-white);
   white-space: nowrap;
   text-align: center;
 `;
 
 const Subtitle = styled.p`
   margin-top: 16px;
-  font-size: 24px; /* 24px */
-  line-height: 32px; /* 32px */
-  font-weight: 600; /* SemiBold */
-  color: rgba(255, 255, 255, 1);
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+  color: var(--color-white);
   text-align: center;
 `;
 

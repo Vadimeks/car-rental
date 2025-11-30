@@ -13,17 +13,11 @@ import { BookingForm } from "@/components/BookingForm/BookingForm";
 const formatMileageDisplay = (value: string | number): string => {
   if (value === null || value === undefined) return "";
   const num = parseInt(value.toString().replace(/[^0-9]/g, ""), 10);
-  return isNaN(num) ? "" : num.toLocaleString("en-US");
+  return isNaN(num) ? "" : num.toLocaleString("en-US", { useGrouping: true });
 };
 
-const COLOR_PRIMARY = "#101828";
-const COLOR_SECONDARY = "#8D929A";
-const COLOR_BUTTON_PRIMARY = "#3470FF";
-
 const DetailContainer = styled.div`
-  max-width: 1440px;
   padding: 50px 0 150px 0;
-  margin: 0 auto;
   min-height: 80vh;
 `;
 
@@ -73,15 +67,15 @@ const DetailBlock = styled.div<DetailBlockProps>`
 const Description = styled.p`
   font-size: 16px;
   line-height: 1.6;
-  color: ${COLOR_PRIMARY};
+  color: var(--color-main);
 `;
 
 const DetailBlockHeader = styled.h3`
-  font-family: Manrope;
+  font-family: var(--font-family-main);
   font-weight: 600;
   font-size: 20px;
   line-height: 24px;
-  color: ${COLOR_PRIMARY};
+  color: var(--color-main);
   margin-bottom: 20px;
 `;
 
@@ -89,11 +83,11 @@ const DetailLine = styled.p`
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: Manrope;
+  font-family: var(--font-family-main);
   font-weight: 500;
   font-size: 16px;
   line-height: 20px;
-  color: ${COLOR_SECONDARY};
+  color: var(--color-gray);
   margin-bottom: 16px;
 
   &:last-child {
@@ -102,11 +96,10 @@ const DetailLine = styled.p`
 `;
 
 const PriceText = styled.p`
-  font-family: Manrope;
-  font-weight: 600;
+  font-family: var(--font-family-main);
   font-size: 24px;
   line-height: 32px;
-  color: ${COLOR_BUTTON_PRIMARY};
+  color: var(--color-button-primary);
   margin-top: 16px;
 `;
 
@@ -130,9 +123,9 @@ const CarDetailsContent: React.FC<CarDetailsProps> = ({ car }) => {
       return (
         <DetailLine key={index}>
           ✅ {match[1].trim()}:{" "}
-          <span style={{ fontWeight: 600, color: COLOR_PRIMARY }}>
-            {match[2]}
-          </span>
+          <span style={{ fontWeight: 600, color: `var(--color-main)` }}>
+            {match[2]}{" "}
+          </span>{" "}
         </DetailLine>
       );
     }
@@ -141,8 +134,11 @@ const CarDetailsContent: React.FC<CarDetailsProps> = ({ car }) => {
 
   return (
     <ContentGrid>
+      {" "}
       <LeftColumn>
+        {" "}
         <ImageWrapper>
+          {" "}
           <Image
             src={car.img}
             alt={`${car.brand} ${car.model}`}
@@ -150,62 +146,61 @@ const CarDetailsContent: React.FC<CarDetailsProps> = ({ car }) => {
             style={{ objectFit: "cover" }}
             unoptimized
             loading="eager"
-          />
+          />{" "}
         </ImageWrapper>
-        <BookingForm />
-      </LeftColumn>
-
+        <BookingForm />{" "}
+      </LeftColumn>{" "}
       <RightColumn>
+        {" "}
         <DetailBlock $spacing="68px">
+          {" "}
           <h2
             style={{
               fontSize: "24px",
               fontWeight: "700",
-              color: COLOR_PRIMARY,
+              color: `var(--color-main)`,
               marginBottom: "8px",
             }}
           >
-            {car.brand} {car.model}, {car.yea}
-          </h2>
+            {car.brand} {car.model}, {car.yea}{" "}
+          </h2>{" "}
           <DetailLine>
             📍 {city}, {country} &nbsp;|&nbsp; Id: {car.id} &nbsp;|&nbsp;
-            Mileage: {formatMileageDisplay(car.mileage)} km
+            Mileage: {formatMileageDisplay(car.mileage)} km{" "}
           </DetailLine>
-          <PriceText>${car.rentalPrice}</PriceText>
+          <PriceText>${car.rentalPrice}</PriceText>{" "}
           <Description
             style={{
               marginTop: "16px",
               fontSize: "16px",
               lineHeight: "1.6",
-              color: COLOR_PRIMARY,
+              color: `var(--color-main)`,
             }}
           >
-            {car.description}
-          </Description>
-        </DetailBlock>
-
+            {car.description}{" "}
+          </Description>{" "}
+        </DetailBlock>{" "}
         <DetailBlock $spacing="110px">
           <DetailBlockHeader>Rental Conditions:</DetailBlockHeader>
-          {(car.rentalConditions || []).map(renderCondition)}
-        </DetailBlock>
-
+          {(car.rentalConditions || []).map(renderCondition)}{" "}
+        </DetailBlock>{" "}
         <DetailBlock $spacing="110px">
           <DetailBlockHeader>Car Specifications:</DetailBlockHeader>
-          <DetailLine>📅 Year: {car.yea}</DetailLine>
-          <DetailLine>🚗 Type: {car.type}</DetailLine>
+          <DetailLine>📅 Year: {car.yea}</DetailLine>{" "}
+          <DetailLine>🚗 Type: {car.type}</DetailLine>{" "}
           <DetailLine>⛽ Fuel Consumption: {car.fuelConsumption}</DetailLine>
-          <DetailLine>⚙️ Engine Size: {car.engineSize}</DetailLine>
-        </DetailBlock>
-
+          <DetailLine>⚙️ Engine Size: {car.engineSize}</DetailLine>{" "}
+        </DetailBlock>{" "}
         <DetailBlock $spacing="0px">
+          {" "}
           <DetailBlockHeader>
-            Accessories and functionalities:
-          </DetailBlockHeader>
+            Accessories and functionalities:{" "}
+          </DetailBlockHeader>{" "}
           {allAccessories.map((acc, index) => (
             <DetailLine key={index}>✅ {acc}</DetailLine>
-          ))}
-        </DetailBlock>
-      </RightColumn>
+          ))}{" "}
+        </DetailBlock>{" "}
+      </RightColumn>{" "}
     </ContentGrid>
   );
 };
@@ -237,7 +232,7 @@ const CarDetailsPage: React.FC = () => {
   if (isLoading) {
     return (
       <DetailContainer style={{ textAlign: "center", padding: "100px" }}>
-        Loading car details...
+        Loading car details...{" "}
       </DetailContainer>
     );
   }
@@ -245,7 +240,7 @@ const CarDetailsPage: React.FC = () => {
   if (!car) {
     return (
       <DetailContainer style={{ textAlign: "center", padding: "100px" }}>
-        Car not found.
+        Car not found.{" "}
       </DetailContainer>
     );
   }
@@ -253,7 +248,7 @@ const CarDetailsPage: React.FC = () => {
   return (
     <DetailContainer>
       <BackLink href="/catalog">← Back to Catalog</BackLink>
-      <CarDetailsContent car={car} />
+      <CarDetailsContent car={car} />{" "}
     </DetailContainer>
   );
 };

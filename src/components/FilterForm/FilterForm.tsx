@@ -36,7 +36,7 @@ const FormField = styled.div`
 `;
 
 const Label = styled.label`
-  color: var(--color-text-primary);
+  color: var(--color-text-secondary);
   font-size: 14px;
   font-weight: 500;
   line-height: 1.2;
@@ -47,14 +47,21 @@ const StyledSelect = styled.select<{ $customWidth: string }>`
   height: 44px;
   padding: 10px 18px;
   border-radius: 14px;
-  background-color: rgba(247, 247, 247, 1);
+  background-color: var(--color-background-input);
   border: none;
-  font-size: 18px;
+
+  font-family: var(--font-family-main);
+  font-size: 16px;
   font-weight: 500;
-  line-height: 1.11;
+  line-height: 20px;
   color: var(--color-text-primary);
   appearance: none;
   cursor: pointer;
+
+  option {
+    background: var(--color-background-input);
+    color: var(--color-text-primary);
+  }
 
   background-image: url('data:image/svg+xml;utf8,<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 7.5L10 12.5L15 7.5" stroke="%23121417" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
   background-repeat: no-repeat;
@@ -71,7 +78,7 @@ const StyledInput = styled.input<{ $isLeft?: boolean }>`
   width: 160px;
   height: 44px;
   padding: 10px 14px;
-  background-color: rgba(247, 247, 247, 1);
+  background-color: var(--color-background-input);
   border: none;
   font-size: 18px;
   font-weight: 500;
@@ -80,7 +87,8 @@ const StyledInput = styled.input<{ $isLeft?: boolean }>`
   border-radius: ${(props) =>
     props.$isLeft ? "14px 0 0 14px" : "0 14px 14px 0"};
   border-right: ${(props) =>
-    props.$isLeft ? "1px solid rgba(138, 138, 137, 0.2)" : "none"};
+    props.$isLeft ? "1px solid var(--color-separator-light)" : "none"};
+
   &:focus {
     outline: none;
   }
@@ -93,8 +101,11 @@ const SearchButton = styled.button`
   color: var(--color-white);
   border: none;
   border-radius: 12px;
-  font-size: 14px;
+  /* 🔑 UPDATED: Font styles */
+  font-family: var(--font-family-main);
+  font-size: 16px;
   font-weight: 600;
+  line-height: 20px;
   transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   margin-left: 18px;
@@ -103,7 +114,7 @@ const SearchButton = styled.button`
   }
 `;
 
-// === FilterForm Component ===
+// === FilterForm Component===
 
 const FilterForm: React.FC = () => {
   const filters = useCarStore((state) => state.filters);
@@ -132,6 +143,7 @@ const FilterForm: React.FC = () => {
 
   return (
     <FormContainer onSubmit={handleSubmit}>
+      {/* Car Brand Field */}
       <FormField>
         <Label htmlFor="carBrand">Car brand</Label>
         <StyledSelect
@@ -148,7 +160,7 @@ const FilterForm: React.FC = () => {
           ))}
         </StyledSelect>
       </FormField>
-
+      {/* Price Field */}
       <FormField>
         <Label htmlFor="priceHour">Price/1 hour</Label>
         <StyledSelect
@@ -165,7 +177,7 @@ const FilterForm: React.FC = () => {
           ))}
         </StyledSelect>
       </FormField>
-
+      {/* Mileage Field */}
       <FormField>
         <Label>Car mileage / km</Label>
         <MileageWrapper>
@@ -184,7 +196,7 @@ const FilterForm: React.FC = () => {
           />
         </MileageWrapper>
       </FormField>
-
+      {/* Search Button */}
       <SearchButton type="submit">Search</SearchButton>
     </FormContainer>
   );

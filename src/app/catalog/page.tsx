@@ -7,6 +7,7 @@ import { useCarStore } from "@/store/carStore";
 import styled from "styled-components";
 import CarCard from "@/components/CarCard/CarCard";
 import FilterForm from "@/components/FilterForm/FilterForm";
+
 //Styles
 
 const LoaderText = styled.h2`
@@ -16,9 +17,6 @@ const LoaderText = styled.h2`
 `;
 
 const CatalogContainer = styled.div`
-  max-width: 1440px;
-  padding: 0px 120px;
-  margin: 0 auto;
   width: 100%;
 `;
 
@@ -33,27 +31,27 @@ const CarGrid = styled.ul`
 `;
 
 const LoadMoreButton = styled.button`
-  display: block;
-  width: 200px;
-  height: 44px;
-  margin: 0 auto 150px;
+ display: block;
+ width: 200px;
+ height: 44px;
+ margin: 0 auto 150px;
 
-  background-color: var(--color-button-primary);
-  color: var(--color-white);
-  border: none;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 600;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
-  &:hover {
-    background-color: var(--color-button-hover);
-  }
-  &:disabled {
-    background-color: var(--color-text-details);
-    cursor: not-allowed;
-  }
+ background-color: var(--color-button-primary); 
+ color: var(--color-white); 
+ border: none;
+ border-radius: 12px;
+ font-size: 14px;
+ font-weight: 600;
+ text-decoration: none;
+ cursor: pointer;
+ transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+ &:hover {
+  background-color: var(--color-button-hover); /
+ }
+ &:disabled {
+  background-color: var(--color-gray); 
+  cursor: not-allowed;
+ }
 `;
 
 // === Component Page ===
@@ -85,11 +83,9 @@ const CarCatalogPage: React.FC = () => {
   return (
     <CatalogContainer>
       <FilterForm />
-
       {isLoading && cars.length === 0 && (
-        <LoaderText>Загрузка аўтамабіляў...</LoaderText>
+        <LoaderText>Loading cars...</LoaderText>
       )}
-
       {cars.length > 0 && (
         <CarGrid>
           {cars
@@ -99,16 +95,14 @@ const CarCatalogPage: React.FC = () => {
             ))}
         </CarGrid>
       )}
-
       {showLoadMore && (
         <LoadMoreButton onClick={handleLoadMore} disabled={isLoading}>
-          {isLoading && cars.length > 0 ? "Загрузка..." : "Load more"}
+          {isLoading && cars.length > 0 ? "Loading..." : "Load more"}
         </LoadMoreButton>
       )}
-
       {!isLoading && cars.length === 0 && (
         <p style={{ textAlign: "center", marginTop: "50px" }}>
-          Няма аўтамабіляў па запыце.
+          No cars found matching your criteria.
         </p>
       )}
     </CatalogContainer>

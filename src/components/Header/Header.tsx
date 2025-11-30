@@ -6,12 +6,11 @@ import styled from "styled-components";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-// Styles for Header component
+// === Styles for Header component ===
 
 const HeaderWrapper = styled.header`
   background-color: var(--color-white);
   border-bottom: 1px solid var(--color-border-light);
-  padding: 0 120px;
   height: 68px;
   display: flex;
   align-items: center;
@@ -29,7 +28,7 @@ const Nav = styled.nav`
 `;
 
 const LogoLink = styled(Link)`
-  /* 104px * 16px */
+  /* Logo size estimation based on default font/style */
   font-size: 16px;
   font-weight: 700;
   text-transform: capitalize;
@@ -64,13 +63,12 @@ const NavLink = styled(Link)<{ $isActive: boolean; $width: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
-
   font-size: 16px;
   font-weight: ${(props) => (props.$isActive ? "600" : "500")};
   color: ${(props) =>
     props.$isActive
       ? "var(--color-button-primary)"
-      : "var(--color-text-primary)"};
+      : "var(--color-text-primary)"}; // Default color
   transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 
@@ -79,7 +77,7 @@ const NavLink = styled(Link)<{ $isActive: boolean; $width: string }>`
   }
 `;
 
-// Component Header
+// === Header Component ===
 
 const Header: React.FC = () => {
   const pathname = usePathname();
@@ -92,10 +90,12 @@ const Header: React.FC = () => {
   return (
     <HeaderWrapper>
       <Nav>
+        {/* Logo Link with primary color highlight */}
         <LogoLink href="/">
           <LogoText>Rental</LogoText>
           <LogoText $isPrimary>Car</LogoText>
         </LogoLink>
+        {/* Navigation List */}
         <NavList>
           {links.map(({ href, label, width }) => (
             <NavItem key={href}>

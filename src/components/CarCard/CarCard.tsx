@@ -7,6 +7,10 @@ import styled from "styled-components";
 import Link from "next/link";
 import { Car } from "@/types/Car";
 import { useCarStore } from "@/store/carStore";
+// ❌ REMOVED: import Icon from "../Icon/Icon";
+
+// Path to the SVG sprite in the public folder
+const SPRITE_PATH = "/sprite.svg";
 
 const CardWrapper = styled.li`
   width: 276px;
@@ -34,25 +38,30 @@ const CarImage = styled.img`
 
 const FavoriteButton = styled.button<{ $isFavorite: boolean }>`
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 16px;
+  right: 16px;
   background: none;
   border: none;
   cursor: pointer;
   padding: 0;
 
   svg {
+    width: 18px; /* Set the size of the SVG container */
+    height: 18px;
+
     fill: ${(props) =>
-      props.$isFavorite
-        ? "var(--color-button-primary)"
-        : "rgba(255, 255, 255, 0.8)"};
+      props.$isFavorite ? "var(--color-button-primary)" : "transparent"};
+
     stroke: ${(props) =>
-      props.$isFavorite ? "var(--color-button-primary)" : "#fff"};
-    transition: fill 250ms cubic-bezier(0.4, 0, 0.2, 1);
+      props.$isFavorite ? "var(--color-button-primary)" : "var(--color-white)"};
+
+    transition: fill 250ms cubic-bezier(0.4, 0, 0.2, 1),
+      stroke 250ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   &:hover svg {
-    fill: var(--color-button-hover);
+    fill: ${(props) =>
+      props.$isFavorite ? "var(--color-button-hover)" : "transparent"};
     stroke: var(--color-button-hover);
   }
 `;
@@ -72,10 +81,11 @@ const TitleText = styled.p`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+`;
 
-  span {
-    color: var(--color-button-primary);
-  }
+const ModelSpan = styled.span`
+  font-weight: 600;
+  color: var(--color-button-primary);
 `;
 
 const PriceText = styled.p`
@@ -90,9 +100,16 @@ const InfoText = styled.p`
   line-height: 1.33;
   margin-bottom: 28px;
 
+  /* Applying fixes for uniform height (max 2 lines) */
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Limit to 2 lines of text */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: calc(1.33em * 2); /* Ensure height is fixed for 2 lines */
+
   span:not(:last-child)::after {
     content: "|";
-    color: rgba(18, 20, 23, 0.2);
+    color: var(--color-separator);
     margin: 0 6px;
   }
 `;
@@ -104,8 +121,8 @@ const LearnMoreLink = styled(Link)`
   color: var(--color-white);
   border: none;
   border-radius: 12px;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
   transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
@@ -118,14 +135,8 @@ const LearnMoreLink = styled(Link)`
   }
 `;
 
-const HeartIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg width="18" height="18" viewBox="0 0 18 18" {...props}>
-    <path
-      d="M15.4 1.5c-1.87 0-3.6 1.05-4.4 2.55C10.2 2.55 8.47 1.5 6.6 1.5 3.32 1.5.5 4.32.5 7.6c0 3.84 3.63 6.8 8.5 11.2 4.87-4.4 8.5-7.36 8.5-11.2 0-3.28-2.82-6.1-6.1-6.1z"
-      strokeWidth="1.5"
-    />
-  </svg>
-);
+// ❌ REMOVED: HeartIcon component definition is removed
+// The use of the sprite replaces it.
 
 interface CarCardProps {
   car: Car;
@@ -149,35 +160,30 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
           alt={`${car.brand} ${car.model}`}
           loading="lazy"
         />
-
         <FavoriteButton
           onClick={() => toggleFavorite(car)}
           $isFavorite={isFavorite}
           aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
         >
-          <HeartIcon />
+          {/* 🔑 NEW: Direct use of SVG sprite icon-heart */}
+          <svg>
+            <use href={`${SPRITE_PATH}#icon-heart`} />
+          </svg>
         </FavoriteButton>
       </ImageContainer>
-
       <TitleBlock>
         <TitleText>
-          {car.brand} <span style={{ fontWeight: 600 }}>{car.model}</span>,{" "}
-          {car.yea}
+          {car.brand} <ModelSpan>{car.model}</ModelSpan>,{car.yea}
         </TitleText>
         <PriceText>{car.rentalPrice}$</PriceText>
       </TitleBlock>
-
       <InfoText>
-        <span>{city}</span>
-        <span>{country}</span>
-        <span>{car.rentalCompany}</span>
-        <span>{car.type}</span>
-        <span>{car.model}</span>
-        <span>{car.id.slice(0, 4)}...</span>
+        <span>{city}</span> <span>{country}</span>
+        <span>{car.rentalCompany}</span> <span>{car.type}</span>
+        <span>{car.model}</span> <span>{car.id.slice(0, 4)}...</span>
         <span>{car.functionalities[0]}</span>
       </InfoText>
-
-      <LearnMoreLink href={`/auto/${car.id}`}>Learn more</LearnMoreLink>
+      <LearnMoreLink href={`/auto/${car.id}`}>Read more</LearnMoreLink>
     </CardWrapper>
   );
 };
