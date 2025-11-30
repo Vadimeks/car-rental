@@ -59,9 +59,6 @@ const LoadMoreButton = styled.button`
 // === Component Page ===
 
 const CarCatalogPage: React.FC = () => {
-  // 🔑 ВЫПРАЎЛЕННЕ: Выкарыстоўваем асобныя селектары для значэнняў і функцый.
-  // Гэта гарантуе, што `useCarStore` не вяртае новы аб'ект {} пры кожным рэндэры,
-  // што выклікае бясконцы цыкл абнаўленняў (Maximum update depth exceeded).
   const cars = useCarStore((state) => state.cars);
   const isLoading = useCarStore((state) => state.isLoading);
   const page = useCarStore((state) => state.page);
@@ -74,16 +71,11 @@ const CarCatalogPage: React.FC = () => {
   const showLoadMore = !isLoading && page < totalPages;
 
   useEffect(() => {
-    // Load available brands once on mount
     fetchAvailableBrands();
 
-    // Load initial car list if empty
     if (cars.length === 0) {
       fetchCars(false);
     }
-
-    // Залежнасці: fetchCars і fetchAvailableBrands стабільныя функцыі ад Zustand,
-    // cars.length змяняецца толькі пры загрузцы новых дадзеных.
   }, [cars.length, fetchCars, fetchAvailableBrands]);
 
   const handleLoadMore = () => {
@@ -100,9 +92,11 @@ const CarCatalogPage: React.FC = () => {
 
       {cars.length > 0 && (
         <CarGrid>
-          {cars.map((car) => (
-            <CarCard key={car.id} car={car} />
-          ))}
+          {cars
+            .filter((car) => car && car.id)
+            .map((car) => (
+              <CarCard key={car.id} car={car} />
+            ))}
         </CarGrid>
       )}
 

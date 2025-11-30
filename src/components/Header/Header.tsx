@@ -79,7 +79,7 @@ const NavLink = styled(Link)<{ $isActive: boolean; $width: string }>`
   }
 `;
 
-// === Кампанент Header ===
+// Component Header
 
 const Header: React.FC = () => {
   const pathname = usePathname();

@@ -8,21 +8,18 @@ import Image from "next/image";
 import { notFound, useParams } from "next/navigation";
 import { fetchCarDetails } from "@/services/api";
 import { Car } from "@/types/Car";
-import { BookingForm } from "@/components/BookingForm/BookingForm"; // 🔑 ІМПАРТУЕМ ФОРМУ
+import { BookingForm } from "@/components/BookingForm/BookingForm";
 
-// === ДАПАМОЖНАЯ ФУНКЦЫЯ: Фарматаванне Прабегу (Mileage) ===
 const formatMileageDisplay = (value: string | number): string => {
   if (value === null || value === undefined) return "";
   const num = parseInt(value.toString().replace(/[^0-9]/g, ""), 10);
   return isNaN(num) ? "" : num.toLocaleString("en-US");
 };
 
-// === КОЛЕРЫ І СТЫЛІ ===
 const COLOR_PRIMARY = "#101828";
 const COLOR_SECONDARY = "#8D929A";
 const COLOR_BUTTON_PRIMARY = "#3470FF";
 
-// === СТЫЛІ МАКЕТА ===
 const DetailContainer = styled.div`
   max-width: 1440px;
   padding: 50px 120px 150px;
@@ -64,8 +61,6 @@ const ImageWrapper = styled.div`
   border-radius: 14px;
   overflow: hidden;
 `;
-
-// === СТЫЛІ ДЭТАЛЯЎ ===
 
 interface DetailBlockProps {
   $spacing: string;
@@ -115,8 +110,6 @@ const PriceText = styled.p`
   margin-top: 16px;
 `;
 
-// === Кампанент адлюстравання дэталяў ===
-
 interface CarDetailsProps {
   car: Car;
 }
@@ -148,23 +141,21 @@ const CarDetailsContent: React.FC<CarDetailsProps> = ({ car }) => {
 
   return (
     <ContentGrid>
-      {/* === ЛЕВЫ СЛУПОК === */}
       <LeftColumn>
         <ImageWrapper>
           <Image
             src={car.img}
             alt={`${car.brand} ${car.model}`}
             fill
-            objectFit="cover"
+            style={{ objectFit: "cover" }}
             unoptimized
+            loading="eager"
           />
         </ImageWrapper>
-        <BookingForm /> {/* 🔑 Выкарыстоўваем імпартаваны кампанент */}
+        <BookingForm />
       </LeftColumn>
 
-      {/* === ПРАВЫ СЛУПОК === */}
       <RightColumn>
-        {/* БЛОК 1: Асноўная Інфармацыя (Spacing: 68px) */}
         <DetailBlock $spacing="68px">
           <h2
             style={{
@@ -193,13 +184,11 @@ const CarDetailsContent: React.FC<CarDetailsProps> = ({ car }) => {
           </Description>
         </DetailBlock>
 
-        {/* БЛОК 2: Умовы Арэнды (Spacing: 110px) */}
         <DetailBlock $spacing="110px">
           <DetailBlockHeader>Rental Conditions:</DetailBlockHeader>
           {(car.rentalConditions || []).map(renderCondition)}
         </DetailBlock>
 
-        {/* БЛОК 3: Спецыфікацыі Аўтамабіля (Spacing: 110px) */}
         <DetailBlock $spacing="110px">
           <DetailBlockHeader>Car Specifications:</DetailBlockHeader>
           <DetailLine>📅 Year: {car.yea}</DetailLine>
@@ -208,7 +197,6 @@ const CarDetailsContent: React.FC<CarDetailsProps> = ({ car }) => {
           <DetailLine>⚙️ Engine Size: {car.engineSize}</DetailLine>
         </DetailBlock>
 
-        {/* БЛОК 4: Аксэсуары (Spacing: 0px) */}
         <DetailBlock $spacing="0px">
           <DetailBlockHeader>
             Accessories and functionalities:
@@ -221,8 +209,6 @@ const CarDetailsContent: React.FC<CarDetailsProps> = ({ car }) => {
     </ContentGrid>
   );
 };
-
-// === СТАРОНКА ДЭТАЛЯЎ (Асноўны КЛІЕНЦКІ кампанент для загрузкі) ===
 
 const CarDetailsPage: React.FC = () => {
   const params = useParams();

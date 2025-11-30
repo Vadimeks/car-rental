@@ -5,14 +5,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-// === КОЛЕРЫ ===
 const COLOR_PRIMARY = "#101828";
 const COLOR_SECONDARY = "#8D929A";
 const COLOR_BACKGROUND = "#F7F7F7";
 const COLOR_BUTTON_PRIMARY = "#3470FF";
 const COLOR_BORDER = "#DADDE1";
-
-// === СТЫЛІ ФОРМЫ ===
 
 const BookingFormContainer = styled.div`
   width: 640px;
@@ -107,8 +104,6 @@ const SubmitButton = styled.button`
     background-color: #0b44b9;
   }
 `;
-
-// === КАМПАНЕНТ ===
 
 export const BookingForm: React.FC = () => {
   const [formData, setFormData] = useState({

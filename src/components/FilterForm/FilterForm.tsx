@@ -1,3 +1,4 @@
+//src/components/FilterForm/FilterForm.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -105,7 +106,6 @@ const SearchButton = styled.button`
 // === FilterForm Component ===
 
 const FilterForm: React.FC = () => {
-  // Заменілі аб'ектны селектар на асобныя селектары, каб не вяртаць новы аб'ект кожны раз
   const filters = useCarStore((state) => state.filters);
   const setFilter = useCarStore((state) => state.setFilter);
   const availableBrands = useCarStore((state) => state.availableBrands);

@@ -97,8 +97,7 @@ const InfoText = styled.p`
   }
 `;
 
-// Стылізаваная кнопка, якая будзе выкарыстоўвацца ў якасці тэга <a>
-const LearnMoreButtonStyled = styled.button`
+const LearnMoreLink = styled(Link)`
   width: 100%;
   height: 44px;
   background-color: var(--color-button-primary);
@@ -112,6 +111,7 @@ const LearnMoreButtonStyled = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+  text-decoration: none;
 
   &:hover {
     background-color: var(--color-button-hover);
@@ -177,10 +177,7 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
         <span>{car.functionalities[0]}</span>
       </InfoText>
 
-      {/* Выкарыстоўваем Next.js Link для навігацыі */}
-      <Link href={`/auto/${car.id}`} passHref>
-        <LearnMoreButtonStyled as="a">Learn more</LearnMoreButtonStyled>
-      </Link>
+      <LearnMoreLink href={`/auto/${car.id}`}>Learn more</LearnMoreLink>
     </CardWrapper>
   );
 };
