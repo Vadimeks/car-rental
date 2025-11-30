@@ -1,5 +1,3 @@
-// src/app/auto/[id]/page.tsx
-
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
@@ -9,6 +7,40 @@ import { notFound, useParams } from "next/navigation";
 import { fetchCarDetails } from "@/services/api";
 import { Car } from "@/types/Car";
 import { BookingForm } from "@/components/BookingForm/BookingForm";
+
+interface IconProps {
+  name: "location" | "auto" | "calendar" | "station" | "check" | "prefrencies";
+  size?: number;
+  colorVar?: string;
+  style?: React.CSSProperties;
+}
+
+const Icon: React.FC<IconProps> = ({
+  name,
+  size = 16,
+  colorVar = "var(--color-main)",
+  style = {},
+}) => {
+  const href = `/sprite.svg#icon-${name}`;
+  return (
+    <svg
+      width={size}
+      height={size}
+      aria-hidden="true"
+      role="img"
+      fill="currentColor"
+      style={{
+        color: colorVar,
+        display: "inline-block",
+        verticalAlign: "middle",
+        flexShrink: 0,
+        ...style,
+      }}
+    >
+      <use href={href} xlinkHref={href} />
+    </svg>
+  );
+};
 
 const formatMileageDisplay = (value: string | number): string => {
   if (value === null || value === undefined) return "";
@@ -95,11 +127,13 @@ const DetailLine = styled.p`
   }
 `;
 
+const DetailLineCondition = styled(DetailLine)``;
+
 const PriceText = styled.p`
   font-family: var(--font-family-main);
   font-size: 24px;
   line-height: 32px;
-  color: var(--color-button-primary);
+  color: var(--color-main);
   margin-top: 16px;
 `;
 
@@ -121,24 +155,27 @@ const CarDetailsContent: React.FC<CarDetailsProps> = ({ car }) => {
     const match = condition.match(/(\D+):\s*(\d+)/);
     if (match) {
       return (
-        <DetailLine key={index}>
-          ✅ {match[1].trim()}:{" "}
+        <DetailLineCondition key={index}>
+          <Icon name="check" colorVar="var(--color-main)" />
+          {match[1].trim()}:
           <span style={{ fontWeight: 600, color: `var(--color-main)` }}>
-            {match[2]}{" "}
-          </span>{" "}
-        </DetailLine>
+            {match[2]}
+          </span>
+        </DetailLineCondition>
       );
     }
-    return <DetailLine key={index}>✅ {condition}</DetailLine>;
+    return (
+      <DetailLineCondition key={index}>
+        <Icon name="check" colorVar="var(--color-main)" />
+        {condition}
+      </DetailLineCondition>
+    );
   };
 
   return (
     <ContentGrid>
-      {" "}
       <LeftColumn>
-        {" "}
         <ImageWrapper>
-          {" "}
           <Image
             src={car.img}
             alt={`${car.brand} ${car.model}`}
@@ -146,14 +183,12 @@ const CarDetailsContent: React.FC<CarDetailsProps> = ({ car }) => {
             style={{ objectFit: "cover" }}
             unoptimized
             loading="eager"
-          />{" "}
+          />
         </ImageWrapper>
-        <BookingForm />{" "}
-      </LeftColumn>{" "}
+        <BookingForm />
+      </LeftColumn>
       <RightColumn>
-        {" "}
         <DetailBlock $spacing="68px">
-          {" "}
           <h2
             style={{
               fontSize: "24px",
@@ -162,13 +197,14 @@ const CarDetailsContent: React.FC<CarDetailsProps> = ({ car }) => {
               marginBottom: "8px",
             }}
           >
-            {car.brand} {car.model}, {car.yea}{" "}
-          </h2>{" "}
+            {car.brand} {car.model}, {car.yea}
+          </h2>
           <DetailLine>
-            📍 {city}, {country} &nbsp;|&nbsp; Id: {car.id} &nbsp;|&nbsp;
-            Mileage: {formatMileageDisplay(car.mileage)} km{" "}
+            <Icon name="location" colorVar="var(--color-main)" />
+            {city}, {country} &nbsp;|&nbsp; Id: {car.id} &nbsp;|&nbsp; Mileage:{" "}
+            {formatMileageDisplay(car.mileage)} km
           </DetailLine>
-          <PriceText>${car.rentalPrice}</PriceText>{" "}
+          <PriceText>${car.rentalPrice}</PriceText>
           <Description
             style={{
               marginTop: "16px",
@@ -177,30 +213,44 @@ const CarDetailsContent: React.FC<CarDetailsProps> = ({ car }) => {
               color: `var(--color-main)`,
             }}
           >
-            {car.description}{" "}
-          </Description>{" "}
-        </DetailBlock>{" "}
+            {car.description}
+          </Description>
+        </DetailBlock>
         <DetailBlock $spacing="110px">
           <DetailBlockHeader>Rental Conditions:</DetailBlockHeader>
-          {(car.rentalConditions || []).map(renderCondition)}{" "}
-        </DetailBlock>{" "}
+          {(car.rentalConditions || []).map(renderCondition)}
+        </DetailBlock>
         <DetailBlock $spacing="110px">
           <DetailBlockHeader>Car Specifications:</DetailBlockHeader>
-          <DetailLine>📅 Year: {car.yea}</DetailLine>{" "}
-          <DetailLine>🚗 Type: {car.type}</DetailLine>{" "}
-          <DetailLine>⛽ Fuel Consumption: {car.fuelConsumption}</DetailLine>
-          <DetailLine>⚙️ Engine Size: {car.engineSize}</DetailLine>{" "}
-        </DetailBlock>{" "}
+          <DetailLine>
+            <Icon name="calendar" colorVar="var(--color-main)" />
+            Year: {car.yea}
+          </DetailLine>
+          <DetailLine>
+            <Icon name="auto" colorVar="var(--color-main)" />
+            Type: {car.type}
+          </DetailLine>
+          <DetailLine>
+            <Icon name="station" colorVar="var(--color-main)" />
+            Fuel Consumption: {car.fuelConsumption}
+          </DetailLine>
+          <DetailLine>
+            <Icon name="prefrencies" colorVar="var(--color-main)" />
+            Engine Size: {car.engineSize}
+          </DetailLine>
+        </DetailBlock>
         <DetailBlock $spacing="0px">
-          {" "}
           <DetailBlockHeader>
-            Accessories and functionalities:{" "}
-          </DetailBlockHeader>{" "}
+            Accessories and functionalities:
+          </DetailBlockHeader>
           {allAccessories.map((acc, index) => (
-            <DetailLine key={index}>✅ {acc}</DetailLine>
-          ))}{" "}
-        </DetailBlock>{" "}
-      </RightColumn>{" "}
+            <DetailLineCondition key={index}>
+              <Icon name="check" colorVar="var(--color-main)" />
+              {acc}
+            </DetailLineCondition>
+          ))}
+        </DetailBlock>
+      </RightColumn>
     </ContentGrid>
   );
 };
@@ -232,7 +282,7 @@ const CarDetailsPage: React.FC = () => {
   if (isLoading) {
     return (
       <DetailContainer style={{ textAlign: "center", padding: "100px" }}>
-        Loading car details...{" "}
+        Loading car details...
       </DetailContainer>
     );
   }
@@ -240,7 +290,7 @@ const CarDetailsPage: React.FC = () => {
   if (!car) {
     return (
       <DetailContainer style={{ textAlign: "center", padding: "100px" }}>
-        Car not found.{" "}
+        Car not found.
       </DetailContainer>
     );
   }
@@ -248,7 +298,7 @@ const CarDetailsPage: React.FC = () => {
   return (
     <DetailContainer>
       <BackLink href="/catalog">← Back to Catalog</BackLink>
-      <CarDetailsContent car={car} />{" "}
+      <CarDetailsContent car={car} />
     </DetailContainer>
   );
 };
