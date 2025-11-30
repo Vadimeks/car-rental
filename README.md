@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Вось прыгожа аформлены тэкст для файла README.md на аснове ўсіх прадстаўленых дэталяў, выкарыстоўваючы сінтаксіс Markdown для стварэння выразнай структуры. Я ўключыў усе секцыі, у тым ліку інфармацыю пра распрацоўшчыка.
 
-## Getting Started
+🚗 RentalCar – Car Rental Service
+Project Description
+The project represents the frontend part of a web application for the "RentalCar" company, designed for demonstrating and booking rental cars.
 
-First, run the development server:
+Core Functionality
+Routing: Implemented Home (/), Catalog (/catalog), and Car Details (/catalog/:id) pages using the Next.js App Router.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Catalog: Display of available vehicles with pagination ("Load More") and filtering capability by brand, price, and mileage. Filtering logic is performed on the backend.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Favorites: Functionality to add cars to a favorites list, with state persistence upon page refresh.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Booking Form: A validated form for renting a car on the individual car details page, with a notification upon successful booking.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Formatting: Display of car mileage with a space separator (e.g., 5 000 km).
 
-## Learn More
+🛠️ Technologies and Libraries Used
+The project is built using Next.js and TypeScript, applying a component-based approach.
 
-To learn more about Next.js, take a look at the following resources:
+Framework & Core
+Framework: Next.js
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Purpose: Project foundation and routing (App Router).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Language: TypeScript
 
-## Deploy on Vercel
+Purpose: Strict code typing.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+State & Data Handling
+State Management: Zustand
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Purpose: Global state management (car list, filters, favorites).
+
+HTTP Requests: Axios
+
+Purpose: Used for interacting with the backend API.
+
+UI & Styling
+Styling: styled-components
+
+Purpose: Component styling (CSS-in-JS).
+
+Forms & Validation
+Form Validation: Formik
+
+Purpose: Form state management.
+
+Validation Schemas: Yup
+
+Purpose: Schemas for validating form input data.
+
+Notifications: react-toastify (or similar Toaster library)
+
+Purpose: Displaying notifications (e.g., after successful booking).
+
+👨‍💻 Developer
+Vadzim Simanau
