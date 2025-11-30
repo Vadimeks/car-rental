@@ -22,7 +22,7 @@ const COLOR_BUTTON_PRIMARY = "#3470FF";
 
 const DetailContainer = styled.div`
   max-width: 1440px;
-  padding: 50px 120px 150px;
+  padding: 50px 0 150px 0;
   margin: 0 auto;
   min-height: 80vh;
 `;

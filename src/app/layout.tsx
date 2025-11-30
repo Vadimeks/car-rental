@@ -1,13 +1,25 @@
 // src/app/layout.tsx
 
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import StyledComponentsRegistry from "@/lib/registry";
 import GlobalStyles from "@/styles/GlobalStyles";
 import Header from "@/components/Header/Header";
+import { Manrope, Inter } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
+const manrope = Manrope({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-manrope",
+  weight: ["400", "500", "600", "700"],
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+  weight: ["500"],
+});
 
 export const metadata: Metadata = {
   title: "RentalCar App - Your best car rental choice",
@@ -21,12 +33,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" className={`${manrope.variable} ${inter.variable}`}>
+      <body>
         <StyledComponentsRegistry>
           <GlobalStyles />
-          <Header />
-          {children}
+          <div className="container">
+            <Header />
+            {children}
+          </div>
         </StyledComponentsRegistry>
       </body>
     </html>

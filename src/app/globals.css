@@ -9,17 +9,21 @@
 }
 
 :root {
-  --primary-font-family: 'Montserrat', sans-serif;
-  --color-text-primary: #121417;
-  --color-text-secondary: #8a8a89;
-  --color-button-primary: #3470ff;
-  --color-button-hover: #0b4cd3;
-  --color-white: #ffffff;
+  --color-main: #101828;
+  --color-white: #FFFFFF;
+  --color-gray: #8E929A;
+  --color-gray-light: #DADDE1;
+  --color-background-input: #F7F7F7;
+  --color-background-badges: #F2F4F7;
+  --color-button-primary: #3470FF;
+  --color-button-hover: #0B44CD;
+  --font-family-main: var(--font-manrope, sans-serif);
+  --font-family-inter: var(--font-inter, sans-serif);
 }
 
 body {
-  font-family: var(--primary-font-family);
-  color: var(--color-text-primary);
+  font-family: var(--font-family-main);
+  color: var(--color-main);
   min-height: 100vh;
   line-height: 1.5;
   background-color: var(--color-white);
@@ -50,4 +54,20 @@ img {
   clip-path: inset(100%);
   clip: rect(0 0 0 0);
   overflow: hidden;
+}
+
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+@media (min-width: 1440px) {
+  .container {
+    width: 1440px;
+    padding-left: 120px;
+    padding-right: 120px;
+    max-width: 1440px;
+  }
 }
