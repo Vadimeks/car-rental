@@ -2,7 +2,7 @@
 
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import {
   Formik,
@@ -22,7 +22,8 @@ const COLOR_ERROR = "red";
 
 const BookingFormContainer = styled.div`
   width: 640px;
-  height: 488px;
+  /* FIX: Changed fixed height to min-height to allow expansion for error messages */
+  min-height: 488px;
   border: 1px solid var(--color-gray-light);
   border-radius: 12px;
   padding: 32px;
@@ -59,35 +60,40 @@ const FormFieldWrapper = styled.div<{ $marginBottom?: string }>`
   display: flex;
   flex-direction: column;
   gap: 4px;
+  /* Ensure a minimum height for error message space */
+  min-height: 68px;
   margin-bottom: ${(props) => props.$marginBottom || "16px"};
 `;
 
 const InputBaseStyles = `
- width: 576px;
- border-radius: 12px;
- padding: 12px 20px;
- background-color: var(--color-background-input); 
- border: 1px solid var(--border-color, transparent); 
- outline: none;
- transition: border-color 0.2s;
- 
- font-family: var(--font-family-main);
- font-weight: 500;
- font-size: 16px;
- line-height: 20px;
- color: var(--color-main); 
+  width: 576px;
+  border-radius: 12px;
+  padding: 12px 20px;
+  background-color: var(--color-background-input); 
+  border: 1px solid var(--border-color, transparent); 
+  outline: none;
+  transition: border-color 0.2s;
+  
+  font-family: var(--font-family-main);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--color-main); 
 
- &::placeholder {
-  color: var(--color-gray);
- }
- &:focus, &:not([value=""]) {
-  color: var(--color-main);
- }
+  &::placeholder {
+    color: var(--color-gray);
+  }
+  &:focus {
+    /* Use transparent border for focus unless there is an error */
+    border-color: var(--border-color, transparent); 
+    color: var(--color-main);
+  }
 `;
 
 const StyledInput = styled(Field)<{ $hasError?: boolean }>`
   ${InputBaseStyles}
   height: 48px;
+  /* Use border-color for error state */
   border-color: ${(props) => (props.$hasError ? COLOR_ERROR : "transparent")};
 `;
 
@@ -95,6 +101,7 @@ const CommentInput = styled(Field)<{ $hasError?: boolean }>`
   ${InputBaseStyles}
   height: 88px;
   resize: none;
+  /* Use border-color for error state */
   border-color: ${(props) => (props.$hasError ? COLOR_ERROR : "transparent")};
 `;
 
@@ -106,11 +113,15 @@ const SubmitButton = styled.button`
   color: var(--color-white);
   border: none;
   border-radius: 12px;
-  padding: 12px 51px;
-  font-size: 14px;
-  font-weight: 600;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
   transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Centering the button in the form container */
+  align-self: center;
+
   &:hover:not(:disabled) {
     background-color: var(--color-button-hover);
   }
@@ -145,7 +156,7 @@ const BookingSchema = Yup.object().shape({
     .email("Invalid email format.")
     .required("Email is required"),
 
-  date: Yup.string().required("Booking date is required"),
+  date: Yup.string().nullable(),
 
   comment: Yup.string().nullable(),
 });
@@ -153,6 +164,8 @@ const BookingSchema = Yup.object().shape({
 // === MAIN COMPONENT ===
 
 export const BookingForm: React.FC = () => {
+  const [dateFieldType, setDateFieldType] = useState<"text" | "date">("text");
+
   const initialValues: BookingValues = {
     name: "",
     email: "",
@@ -165,7 +178,6 @@ export const BookingForm: React.FC = () => {
     { setSubmitting, resetForm }: FormikHelpers<BookingValues>
   ) => {
     setSubmitting(true);
-
     await new Promise((resolve) => setTimeout(resolve, 50));
 
     try {
@@ -176,8 +188,8 @@ export const BookingForm: React.FC = () => {
       });
 
       resetForm();
+      setDateFieldType("text");
     } catch (_) {
-      // Using English for toast messages
       toast.error("Error submitting the order. Please try again.");
     } finally {
       setSubmitting(false);
@@ -204,7 +216,6 @@ export const BookingForm: React.FC = () => {
                 name="name"
                 type="text"
                 placeholder="Name*"
-                as="input"
                 $hasError={!!(errors.name && touched.name)}
                 disabled={isSubmitting}
               />
@@ -216,7 +227,7 @@ export const BookingForm: React.FC = () => {
                 name="email"
                 type="email"
                 placeholder="Email*"
-                as="input"
+                // 🔑 FIX: Remove as="input"
                 $hasError={!!(errors.email && touched.email)}
                 disabled={isSubmitting}
               />
@@ -226,9 +237,14 @@ export const BookingForm: React.FC = () => {
             <FormFieldWrapper>
               <StyledInput
                 name="date"
-                type="date"
-                placeholder="Booking date*"
-                as="input"
+                type={dateFieldType}
+                placeholder="Booking date"
+                onFocus={() => setDateFieldType("date")}
+                onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+                  if (!e.target.value) {
+                    setDateFieldType("text");
+                  }
+                }}
                 $hasError={!!(errors.date && touched.date)}
                 disabled={isSubmitting}
               />

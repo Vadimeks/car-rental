@@ -7,9 +7,7 @@ import styled from "styled-components";
 import Link from "next/link";
 import { Car } from "@/types/Car";
 import { useCarStore } from "@/store/carStore";
-// ❌ REMOVED: import Icon from "../Icon/Icon";
 
-// Path to the SVG sprite in the public folder
 const SPRITE_PATH = "/sprite.svg";
 
 const CardWrapper = styled.li`
@@ -46,14 +44,18 @@ const FavoriteButton = styled.button<{ $isFavorite: boolean }>`
   padding: 0;
 
   svg {
-    width: 18px; /* Set the size of the SVG container */
+    width: 18px;
     height: 18px;
 
     fill: ${(props) =>
-      props.$isFavorite ? "var(--color-button-primary)" : "transparent"};
+      props.$isFavorite
+        ? "var(--color-button-primary)" // Active: Blue fill
+        : "transparent"}; // Inactive: Transparent fill
 
     stroke: ${(props) =>
-      props.$isFavorite ? "var(--color-button-primary)" : "var(--color-white)"};
+      props.$isFavorite
+        ? "var(--color-button-primary)" // Active: Blue stroke
+        : "var(--color-white)"}; // Inactive: White stroke (on the car image)
 
     transition: fill 250ms cubic-bezier(0.4, 0, 0.2, 1),
       stroke 250ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -62,7 +64,11 @@ const FavoriteButton = styled.button<{ $isFavorite: boolean }>`
   &:hover svg {
     fill: ${(props) =>
       props.$isFavorite ? "var(--color-button-hover)" : "transparent"};
-    stroke: var(--color-button-hover);
+
+    stroke: ${(props) =>
+      props.$isFavorite
+        ? "var(--color-button-hover)"
+        : "var(--color-button-primary)"};
   }
 `;
 
@@ -95,17 +101,14 @@ const PriceText = styled.p`
 `;
 
 const InfoText = styled.p`
-  color: var(--color-text-secondary);
+  color: var(--color-gray);
   font-size: 12px;
   line-height: 1.33;
   margin-bottom: 28px;
+  font-weight: 400;
 
-  /* Applying fixes for uniform height (max 2 lines) */
-  display: -webkit-box;
-  -webkit-line-clamp: 2; /* Limit to 2 lines of text */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  min-height: calc(1.33em * 2); /* Ensure height is fixed for 2 lines */
+  display: flex;
+  flex-wrap: wrap;
 
   span:not(:last-child)::after {
     content: "|";
@@ -135,9 +138,6 @@ const LearnMoreLink = styled(Link)`
   }
 `;
 
-// ❌ REMOVED: HeartIcon component definition is removed
-// The use of the sprite replaces it.
-
 interface CarCardProps {
   car: Car;
 }
@@ -152,6 +152,12 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
   const city = addressParts[addressParts.length - 2];
   const country = addressParts[addressParts.length - 1];
 
+  const formattedMileage = car.mileage
+    .toLocaleString("fr-FR", {
+      maximumFractionDigits: 0,
+    })
+    .replace(/\s/g, "\u00A0");
+
   return (
     <CardWrapper>
       <ImageContainer>
@@ -165,7 +171,6 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
           $isFavorite={isFavorite}
           aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
         >
-          {/* 🔑 NEW: Direct use of SVG sprite icon-heart */}
           <svg>
             <use href={`${SPRITE_PATH}#icon-heart`} />
           </svg>
@@ -178,10 +183,11 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
         <PriceText>{car.rentalPrice}$</PriceText>
       </TitleBlock>
       <InfoText>
-        <span>{city}</span> <span>{country}</span>
-        <span>{car.rentalCompany}</span> <span>{car.type}</span>
-        <span>{car.model}</span> <span>{car.id.slice(0, 4)}...</span>
-        <span>{car.functionalities[0]}</span>
+        <span>{city}</span>
+        <span>{country}</span>
+        <span>{car.rentalCompany}</span>
+        <span>{car.type}</span>
+        <span>{formattedMileage} km</span>
       </InfoText>
       <LearnMoreLink href={`/auto/${car.id}`}>Read more</LearnMoreLink>
     </CardWrapper>

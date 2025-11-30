@@ -6,6 +6,8 @@ import styled from "styled-components";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+const SPRITE_PATH = "/sprite.svg";
+
 // === Styles for Header component ===
 
 const HeaderWrapper = styled.header`
@@ -27,20 +29,25 @@ const Nav = styled.nav`
   height: 100%;
 `;
 
-const LogoLink = styled(Link)`
-  /* Logo size estimation based on default font/style */
-  font-size: 16px;
-  font-weight: 700;
-  text-transform: capitalize;
-  letter-spacing: normal;
-  text-decoration: none;
+const LogoIcon = styled.svg`
+  width: 104px;
+  height: 16px;
+  display: block;
+
+  .logo-primary {
+    fill: var(--color-button-primary); /* Blue */
+  }
+
+  .logo-secondary {
+    fill: var(--color-text-primary); /* Dark/Black */
+  }
 `;
 
-const LogoText = styled.span<{ $isPrimary?: boolean }>`
-  color: ${(props) =>
-    props.$isPrimary
-      ? "var(--color-button-primary)"
-      : "var(--color-text-primary)"};
+const LogoLink = styled(Link)`
+  display: flex;
+  align-items: center;
+  height: 100%;
+  text-decoration: none;
 `;
 
 const NavList = styled.ul`
@@ -68,7 +75,7 @@ const NavLink = styled(Link)<{ $isActive: boolean; $width: string }>`
   color: ${(props) =>
     props.$isActive
       ? "var(--color-button-primary)"
-      : "var(--color-text-primary)"}; // Default color
+      : "var(--color-text-primary)"};
   transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 
@@ -90,12 +97,12 @@ const Header: React.FC = () => {
   return (
     <HeaderWrapper>
       <Nav>
-        {/* Logo Link with primary color highlight */}
         <LogoLink href="/">
-          <LogoText>Rental</LogoText>
-          <LogoText $isPrimary>Car</LogoText>
+          <LogoIcon>
+            <use href={`${SPRITE_PATH}#icon-logo`} />
+          </LogoIcon>
         </LogoLink>
-        {/* Navigation List */}
+
         <NavList>
           {links.map(({ href, label, width }) => (
             <NavItem key={href}>
