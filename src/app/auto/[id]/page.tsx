@@ -53,16 +53,16 @@ const DetailContainer = styled.div`
   min-height: 80vh;
 `;
 
-const BackLink = styled.a`
-  display: inline-block;
-  margin-bottom: 20px;
-  color: var(--color-button-primary);
-  text-decoration: none;
-  font-weight: 500;
-  &:hover {
-    text-decoration: underline;
-  }
-`;
+// const BackLink = styled.a`
+//   display: inline-block;
+//   margin-bottom: 20px;
+//   color: var(--color-button-primary);
+//   text-decoration: none;
+//   font-weight: 500;
+//   &:hover {
+//     text-decoration: underline;
+//   }
+// `;
 
 const ContentGrid = styled.div`
   display: flex;
@@ -297,7 +297,7 @@ const CarDetailsPage: React.FC = () => {
 
   return (
     <DetailContainer>
-      <BackLink href="/catalog">← Back to Catalog</BackLink>
+      {/* <BackLink href="/catalog">← Back to Catalog</BackLink> */}
       <CarDetailsContent car={car} />
     </DetailContainer>
   );
